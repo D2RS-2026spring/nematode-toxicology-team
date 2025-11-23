@@ -138,6 +138,9 @@ noCarb_plot_dat <- or2_noCarb_proc %>%
 # ORIGINAL REGRESSION BASED ON gm_mean
 orthog_reg_model_log10 <- pracma::odregress(x = log10(noCarb_plot_dat$gm_mean_x), y = log10(noCarb_plot_dat$gm_mean_y))
 
+# deming model
+deming_model_log10 <- deming::deming(log10(noCarb_plot_dat$gm_mean_y) ~ log10(noCarb_plot_dat$gm_mean_x))
+
 # # old orthogonal regression
 oldOR_df <- tibble::tibble(x = log10(noCarb_plot_dat$gm_mean_x), y = log10(noCarb_plot_dat$gm_mean_y))
 pcObject <- princomp(oldOR_df)
@@ -303,6 +306,7 @@ fig3 <- cowplot::plot_grid(pcomp + labs(subtitle = "", x = bquote("Nematode Imag
                            ordaphp + labs(subtitle = "", x = bquote("Nematode Imager" ~ EC[10] ~ "(mg/L)"), y = bquote(~italic("Daphnia magna") ~ LC[50] ~ "(mg/L)")),
                            labels = c("A", "B", "C", "D"), align = "vh", ncol = 2)
 cowplot::ggsave2(fig3, filename = glue::glue("figures/figure3.png"), width = 7.5, height = 7.5)
+cowplot::ggsave2(fig3, filename = glue::glue("figures/figure3.pdf"), width = 6.5, height = 6.5)
 
 #==============================================================================#
 # Export data for figure

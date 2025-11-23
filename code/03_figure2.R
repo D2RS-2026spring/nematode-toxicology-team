@@ -109,5 +109,5 @@ abs.plot
 #ggsave(rel.plot, filename = "plots/fig3_naturalVaritaionRel.png", width = 7, height = 7)
 #ggsave(abs.plot, filename = "plots/fig3_naturalVaritaionAbs.png", width = 7, height = 7)
 ggsave(abs.plot, filename = "figures/figure2.png", width = 6.5, height = 6.5)
-
+ggsave(abs.plot, filename = "figures/figure2.pdf", width = 6.5, height = 6.5)
 
