@@ -16,10 +16,10 @@
 ### 📌 一、小组信息
 *   **小组名称**：线虫高通量毒性筛选研究小组
 *   **小组成员**：
-    *   2025303110024 → [@jiaoliu425](https://github.com/jiaoliu425)
-    *   张颖格 2025303120025 → [@xluug](https://github.com/xluug)
-    *   易佳顺 2025303110029 → [@yijiashun08](https://github.com/yijiashun08)
-    *   周暄烊 2025303120012 → [@zxy189](https://github.com/zxy189)
+    *   2025303110024 [@jiaoliu425](https://github.com/jiaoliu425)
+    *   张颖格 2025303120025 [@xluug](https://github.com/xluug)
+    *   易佳顺 2025303110029 [@yijiashun08](https://github.com/yijiashun08)
+    *   周暄烊 2025303120012 [@zxy189](https://github.com/zxy189)
 ---
 
 ### 👥 二、成员任务分工
@@ -104,4 +104,14 @@
 ---
 
 ### 📂 七、项目文件结构
+
+| 路径 | 类型 | 功能说明 |
+| :--- | :--- | :--- |
+| `data/` | 文件夹 | 存放项目所有数据，分为原始数据和处理后数据 |
+| `data/raw/` | 子文件夹 | 原始数据，不做任何修改，用于溯源 |
+| `figures/` | 文件夹 | 存放所有复现的图表（PDF/PNG/JPG） |
+| `scripts/analysis.R` | 文件 | 正交回归分析主脚本，跨物种/平台比较 |
+| `scripts/functions.R` | 文件 | 项目通用函数库，包含所有核心算法 |
+| `README.md` | 文件 | 项目总说明文档，包含简介、分工、运行指南 |
+| `requirements.txt` | 文件 | 项目依赖包列表，一键安装环境 |
 
