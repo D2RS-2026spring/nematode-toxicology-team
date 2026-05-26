@@ -39,7 +39,7 @@
 
 ## Usage
 1. Clone the repo with `git clone https://github.com/Crombie-Lab/nematode-hts-toxicology.git`
-2. Download the 5.8 Gb `INVITRODB_V4_1_SUMMARY.zip` file and move the required sourcefiles into the `/data/raw/toxcast_data/` directory (see [TOXCAST](#9-toxcast)). 
+2. Download the 5.8 Gb `INVITRODB_V4_1_SUMMARY.zip` file and move the required sourcefiles into the `/data/raw/toxcast_data/` directory (see https://clowder.edap-cluster.com/files/64bfdb62e4b08a6b5a434d48). 
 2. Open the `01_data_processing.R` script in Rstudio.
     * Run the code to see how the raw data are cleaned, formatted, and joined.
 3. Open and run the remaining `.R` files sequentially to reproduce the analyses in the paper.
