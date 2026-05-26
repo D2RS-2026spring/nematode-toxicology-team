@@ -27,7 +27,7 @@
 *   **论文标题**：High-Throughput Toxicity Screening with C. elegans: Current Platforms, Key Advantages, and Future Directions
 *   **发表期刊/时间**：ACS Environmental Science & Technology, 2026
 *   **论文链接**：https://pubs.acs.org/doi/10.1021/acs.est.5c12562
-*   **代码仓库地址**：https://github.com/jiaoliu425/nematode-hts-toxicology
+*   **代码仓库地址**：https://github.com/D2RS-2026spring/nematode-toxicology-team
 *   **数据集公开地址**：
     *   GitHub 仓库 `data/` 文件夹
     *   论文 Supporting Information
