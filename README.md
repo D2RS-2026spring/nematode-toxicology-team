@@ -106,12 +106,13 @@
 ### 📂 七、项目文件结构
 
 | 路径 | 类型 | 功能说明 |
-| :--- | :--- | :--- |
-| `data/` | 文件夹 | 存放项目所有数据，分为原始数据和处理后数据 |
-| `data/raw/` | 子文件夹 | 原始数据，不做任何修改，用于溯源 |
-| `figures/` | 文件夹 | 存放所有复现的图表（PDF/PNG/JPG） |
-| `scripts/analysis.R` | 文件 | 正交回归分析主脚本，跨物种/平台比较 |
-| `scripts/functions.R` | 文件 | 项目通用函数库，包含所有核心算法 |
-| `README.md` | 文件 | 项目总说明文档，包含简介、分工、运行指南 |
-| `requirements.txt` | 文件 | 项目依赖包列表，一键安装环境 |
+## 七、项目文件结构
+```text
+nematode-toxicology-team/
+├── code/                  # 项目核心代码文件夹
+├── data/                  # 项目数据文件夹
+├── figures/               # 复现图表文件夹
+├── .gitignore             # Git忽略配置文件
+├── LICENSE                # 项目开源协议文件
+└── README.md              # 项目说明文档
 
