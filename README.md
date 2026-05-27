@@ -7,7 +7,7 @@
 ### 📌 一、小组信息
 *   **小组名称**：线虫高通量毒性筛选研究小组
 *   **小组成员**：
-    *   2025303110024 [@jiaoliu425](https://github.com/jiaoliu425)
+    *   刘  娇 2025303110024 [@jiaoliu425](https://github.com/jiaoliu425)
     *   张颖格 2025303120025 [@xluug](https://github.com/xluug)
     *   易佳顺 2025303110029 [@yijiashun08](https://github.com/yijiashun08)
     *   周暄烊 2025303120012 [@zxy189](https://github.com/zxy189)
