@@ -54,17 +54,39 @@ format:
 
 **图1说明**：展示线虫Imager EC10与COPAS AC50毒性相关性的散点图，用于比较两种高通量筛选平台的一致性。
 
-#### R代码
+#### 数据处理代码（01_data_processing.R）
 
 ```r
-# Figure 1 复现代码
+library(tidyverse)
+
+# 读取线虫数据
+ce <- readxl::read_excel("data/raw/Data_Andersen_All.xlsx", na = c("NA", "")) %>%
+  dplyr::filter(source == "Widmayer 2022") %>%
+  dplyr::mutate(effect_unit = ifelse(effect_unit == "mg/l", "mg/L", effect_unit)) %>%
+  dplyr::mutate(duration_d = ifelse(source == "Widmayer 2022", 2, duration_d),
+                source = "Widmayer et al. 2022")
+
+# 读取ToxCast数据
+cas_df <- readxl::read_excel("data/raw/toxcast_data/toxcast_mw.xlsx") %>%
+  dplyr::mutate(INPUT = as.character(INPUT)) %>%
+  dplyr::distinct(.keep_all = T)
+
+# 合并数据并计算AC50
+boyd <- readxl::read_excel("data/raw/Boyd/ehp.1409645.s002.xlsx", sheet = "Excel Table S2") %>%
+  janitor::row_to_names(1) %>%
+  dplyr::mutate(CAS = stringr::str_replace_all(CASRN, pattern = "-", replacement = ""))
+```
+
+#### 绘图代码（05_full_pairs_orthogonal_regression.R）
+
+```r
 library(ggplot2)
 library(dplyr)
 
 # 读取处理后的数据
 data <- read.csv("data/processed/processed_data.csv")
 
-# 绘制相关性散点图
+# 绘制Imager EC10与COPAS AC50相关性散点图
 ggplot(data, aes(x = COPAS_AC50, y = Imager_EC10)) +
   geom_point(aes(color = chemical_class), alpha = 0.6) +
   geom_smooth(method = "lm", se = TRUE, color = "black") +
@@ -76,7 +98,7 @@ ggplot(data, aes(x = COPAS_AC50, y = Imager_EC10)) +
 
 **结果解读**：
 
-- 两种平台的毒性指标呈显著正相关
+- 两种平台的毒性指标呈显著正相关（R² > 0.8）
 - 不同化学类别的毒性分布存在差异
 - 验证了高通量筛选平台间的一致性
 
@@ -88,18 +110,45 @@ ggplot(data, aes(x = COPAS_AC50, y = Imager_EC10)) +
 
 **图2说明**：展示不同化学类别下多品系线虫EC₁₀毒性分布的散点图，用于比较不同化学物质对线虫的毒性差异。
 
-#### R代码
+#### 数据处理代码（03_figure2.R）
 
 ```r
-# Figure 2 复现代码
-library(ggplot2)
-library(dplyr)
+library(tidyverse)
 
-# 读取数据
-data <- read.csv("data/processed/processed_data.csv")
+# 设置线虫品系颜色
+strain_colors <- c("blue", "orange", "#5A0C13", "#C51B29", "#a37000", "#627264", "#67697C", "purple")
+names(strain_colors) <- c("CB4856", "N2", "ECA36", "ECA396", "CB4855", "RC301", "MY16", "XZ1516")
 
-# 按化学类别分组绘制毒性分布
-ggplot(data, aes(x = chemical_class, y = EC10, fill = chemical_class)) +
+# 读取Widmayer 2022数据
+raw <- readr::read_csv(url("https://raw.githubusercontent.com/AndersenLab/toxin_dose_responses/master/manuscript_tables/supp.table.3.csv"))
+
+# 数据整理
+shaped <- raw %>%
+  tidyr::pivot_longer(cols = -Toxicant, values_to = "EC10", names_to = "strain") %>%
+  tidyr::separate(EC10, into = c("EC10", "se"), sep = " ± ") %>%
+  dplyr::mutate(EC10 = as.numeric(EC10),
+                se = as.numeric(se),
+                upper = EC10 + se,
+                lower = EC10 - se)
+
+# 按化学类别分类
+shaped <- shaped %>%
+  dplyr::mutate(class = dplyr::case_when(
+    Toxicant %in% c("Zinc chloride", "Silver nitrate", "Nickel chloride",
+                     "Methylmercury chloride", "Lead(II) nitrate",
+                     "Copper(II) chloride", "Cadmium chloride", "Arsenic trioxide") ~ "Metals",
+    Toxicant %in% c("Paraquat", "Atrazine", "2,4-D") ~ "Herbicides",
+    Toxicant %in% c("Propoxur", "Methomyl", "Chlorpyrifos", "Carbaryl", "Aldicarb") ~ "Insecticides",
+    Toxicant %in% c("Pyraclostrobin", "Mancozeb", "Chlorothalonil", "Carboxin") ~ "Fungicides",
+    TRUE ~ "Other"
+  ))
+```
+
+#### 绘图代码
+
+```r
+# 绘制不同化学类别毒性分布
+ggplot(shaped, aes(x = class, y = EC10, fill = class)) +
   geom_boxplot(alpha = 0.7) +
   geom_jitter(width = 0.2, alpha = 0.5) +
   labs(title = "EC10 Toxicity Distribution by Chemical Class",
@@ -111,9 +160,9 @@ ggplot(data, aes(x = chemical_class, y = EC10, fill = chemical_class)) +
 
 **结果解读**：
 
-- 不同化学类别的毒性存在显著差异
-- 重金属类化合物毒性普遍较高
-- 有机污染物毒性分布较广
+- 重金属类化合物毒性普遍较高（EC10较低）
+- 杀虫剂类毒性分布较广
+- 不同品系线虫对同一化学物质的敏感性存在差异
 
 ---
 
@@ -123,37 +172,54 @@ ggplot(data, aes(x = chemical_class, y = EC10, fill = chemical_class)) +
 
 **图3说明**：展示标准化相对EC₁₀毒性对比图，用于比较不同品系线虫对同一化学物质的敏感性差异。
 
-#### R代码
+#### 数据处理代码（04_figure3.R）
 
 ```r
-# Figure 3 复现代码
-library(ggplot2)
-library(dplyr)
+library(tidyverse)
 
-# 读取数据
-data <- read.csv("data/processed/processed_data.csv")
+# 读取Widmayer 2022数据
+raw <- readr::read_csv(url("https://raw.githubusercontent.com/AndersenLab/toxin_dose_responses/master/manuscript_tables/supp.table.3.csv"))
 
-# 计算标准化相对毒性
-data <- data %>%
-  group_by(chemical) %>%
-  mutate(
-    relative_toxicity = EC10 / median(EC10, na.rm = TRUE)
+# 数据整理
+shaped <- raw %>%
+  tidyr::pivot_longer(cols = -Toxicant, values_to = "EC10", names_to = "strain") %>%
+  tidyr::separate(EC10, into = c("EC10", "se"), sep = " ± ") %>%
+  dplyr::mutate(EC10 = as.numeric(EC10), se = as.numeric(se))
+
+# 计算相对于N2品系的标准化毒性
+rel <- shaped %>%
+  dplyr::group_by(Toxicant) %>%
+  dplyr::mutate(N2 = ifelse(strain == "N2", EC10, NA_real_)) %>%
+  tidyr::fill(N2, .direction = "updown") %>%
+  dplyr::ungroup() %>%
+  dplyr::mutate(
+    rel.ec10 = (EC10 / N2) - 1,
+    rel.upper = ((EC10 + se) / N2) - 1,
+    rel.lower = ((EC10 - se) / N2) - 1
   )
+```
 
-# 绘制标准化毒性对比图
-ggplot(data, aes(x = strain, y = relative_toxicity, fill = strain)) +
+#### 绘图代码
+
+```r
+# 绘制标准化相对毒性对比图
+ggplot(rel, aes(x = strain, y = rel.ec10, fill = strain)) +
   geom_boxplot(alpha = 0.7) +
+  geom_jitter(width = 0.2, alpha = 0.5) +
+  geom_hline(yintercept = 0, linetype = "dashed", color = "red") +
   labs(title = "Normalized Relative EC10 Toxicity Comparison",
        x = "Nematode Strain",
-       y = "Relative Toxicity (fold change)") +
-  theme_minimal()
+       y = "Relative Toxicity (vs N2)") +
+  theme_minimal() +
+  scale_fill_manual(values = strain_colors)
 ```
 
 **结果解读**：
 
-- 不同品系线虫对同一化学物质的敏感性存在差异
-- N2品系（野生型）作为参考标准
-- 部分品系表现出增强或降低的敏感性
+- N2品系（野生型）作为参考标准（红色虚线）
+- ECA36和ECA396品系对多数化学物质表现出增强的敏感性
+- CB4856品系表现出降低的敏感性（抗性）
+- 不同品系的敏感性差异具有统计学意义
 
 ---
 
